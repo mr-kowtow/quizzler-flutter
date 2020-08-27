@@ -33,4 +33,9 @@ class QuizBrain {
     return _questionBank[_questionCounter].questionAnswer;
   }
 
+  bool isFinished() {
+    return (_questionCounter == _questionBank.length - 1);
+  }
+
+  void reset() {_questionCounter = 0;}
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:quizzler/quizBrain.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 void main() => runApp(Quizzler());
 
@@ -27,8 +28,30 @@ class QuizPage extends StatefulWidget {
 
 class _QuizPageState extends State<QuizPage> {
   List<Icon> scoreKeeper = [];
-
   QuizBrain quizBrain = QuizBrain();
+  void checkAnswer(bool userAnswer) {
+    if (quizBrain.isFinished()) {
+      Alert(
+        context: context,
+        title: 'Finished!',
+        desc: 'You\'ve reached the end of the quiz.',
+      ).show();
+
+      quizBrain.reset();
+      scoreKeeper.clear();
+
+    }
+
+    else {
+      bool correctAnswer = quizBrain.getQuestionAnswer();
+      if (correctAnswer == userAnswer) {
+        scoreKeeper.add(Icon(Icons.check, color: Colors.green));
+      } else {
+        scoreKeeper.add(Icon(Icons.close, color: Colors.red));
+      }
+      quizBrain.nextQuestion();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,13 +90,7 @@ class _QuizPageState extends State<QuizPage> {
               ),
               onPressed: () {
                 setState(() {
-                  bool correctAnswer = quizBrain.getQuestionAnswer();
-                  if (correctAnswer){
-                    scoreKeeper.add(Icon(Icons.check, color: Colors.green));
-                  } else {
-                    scoreKeeper.add(Icon(Icons.close, color: Colors.red));
-                  }
-                  quizBrain.nextQuestion();
+                  checkAnswer(true);
                 });
               },
             ),
@@ -93,13 +110,8 @@ class _QuizPageState extends State<QuizPage> {
               ),
               onPressed: () {
                 setState(() {
-                  bool correctAnswer = quizBrain.getQuestionAnswer();
-                  if (!correctAnswer){
-                    scoreKeeper.add(Icon(Icons.check, color: Colors.green));
-                  } else {
-                    scoreKeeper.add(Icon(Icons.close, color: Colors.red));
-                  }
-                  quizBrain.nextQuestion();
+                  checkAnswer(false);
+
                 });
               },
             ),
